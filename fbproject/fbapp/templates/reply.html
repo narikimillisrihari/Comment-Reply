@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for reply in replies %}
+        <p>{{ reply.text }}-----{{ reply.date_added }}</p>
+        
+    {% endfor %}
+    <a class="btn btn-link" href="{% url 'allpost' %}">Back to Post List</a>
+
+</body>
+</html>

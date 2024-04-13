@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* border: 5px outset #dc3545; /* Bootstrap danger color */
+            /* text-align: center; */
+            /* color: #dc3545; Bootstrap danger color */
+            /* max-width: 500px; */
+            /* margin: auto; */
+            /* background: white; */
+            /* padding: 20px; Increased padding for better spacing */
+            /* margin-top: 50px; Added margin-top for better spacing */
+            /* border-radius: 10px; Added border-radius for rounded corners */ 
+        }
+
+        .dashboard-content {
+            text-align: center;
+        }
+
+        .dashboard-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .dashboard-buttons button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .addpost_logout {
+            border: 1px solid black;
+            padding: 14px 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .container2{
+            border: 5px outset pink;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-content">
+          <h1 class="text-center mt-4 mb-4">Welcome to Dashboard</h1>
+          
+          <div class="addpost_logout mb-4">
+            <a class="btn btn-link" href="{% url 'allpost' %}">All Added Post</a>
+            <a class="btn btn-link" href="{% url 'apppost' %}">Go to Add Post</a>
+            <a class="btn btn-link" href="{% url 'logout' %}">Logout</a>
+          </div>
+      
+          <div class="div3">
+            <h2 class="text-center mb-4">All Posts</h2>
+              <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            {% for post in posts %}
+                                    <h5 class="card-title">{{ post.post_title }}</h5>
+                                    <p class="card-text">{{ post.post_urls }}</p>
+                                    {% if post.post_image %}
+                                        <img src="{{ post.post_image.url }}" alt="" width="500">
+                                    {% endif %}
+                                    <br><br><br>
+                                    <form action="{% url 'main_page_comment' post.id %}" method="get" class="comment-form">
+                                        {% csrf_token %}
+                                        <label for="comment">Add Comment:</label>
+                                        <textarea name="comment" id="comment" rows="1" placeholder="Enter your comment"></textarea>
+                                        <button type="submit" class="btn btn-link">Submit Comment</button>
+                                    </form>
+                                    <div class="container2">
+                                        <h1>Comments........</h1>
+                                        {% if not post.comments.all %}
+                                            No comments...... .   <a href="{% url 'addcommentinside' post.id %}" class="btn btn-primary">Add Comment</a>
+                                        {% else %}
+                                            <a href="{% url 'addcommentinside' post.id %}" class="btn btn-sm  btn-secondary">Add Comment</a>
+                                            <br>
+                                            <h1>comments are available</h1>
+                                            {% for comment in post.comments.all %}
+                                                <div class="comment_div">
+                                                    <strong>{{ comment.name }}- {{ comment.date_added }}</strong>
+                                                    <br>
+                                                    {{ comment.body }}
+                                                    <form action="{% url 'main_page_reply' comment.id %}" method="get" class="comment-form">
+                                                        {% csrf_token %}
+                                                        <label for="comment">Add Reply:</label>
+                                                        <textarea name="reply" id="reply" rows="1" placeholder="Enter your reply"></textarea>
+                                                        <button type="submit" class="btn btn-link">Submit reply</button>
+                                                    </form>
+                                                    <h4>Replies</h4>
+                                                            {% for reply in comment.replies.all %}
+                                                                <div class="coment_reply">   
+                                                                    <p>{{ reply.text }}-----{{ reply.date_added }}
+                                                                        <br><br>
+                                                                        <a href="{% url 'delete_reply' reply.id %}" class="btn btn-sm  btn-secondary">Delete</a>
+
+                                                                    </p>                                        
+                                                                </div> 
+                                                            {% endfor %}
+                
+                                                </div>
+                                                <br>
+                                                <a href="{% url 'comment_reply_view' comment.id %}" class="btn btn-sm  btn-secondary">Reply</a>
+                                                <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm  btn-secondary">Delete</a>
+                                                <br><br>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+      </div>    
+</body>
+</html>
